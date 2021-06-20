@@ -11,6 +11,9 @@
     <OutputPath>.</OutputPath>
     <Name>PaintingDeepFake</Name>
     <RootNamespace>PaintingDeepFake</RootNamespace>
+    <TestFramework>unittest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.\test\</UnitTestRootDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +24,39 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="data\data_generator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="data\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="gan\discriminator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="gan\generator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="gan\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PaintingDeepFake.py" />
+    <Compile Include="test\test_generator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test\test_gpu.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="data\" />
+    <Folder Include="gan\" />
+    <Folder Include="test\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\catalog.csv" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
