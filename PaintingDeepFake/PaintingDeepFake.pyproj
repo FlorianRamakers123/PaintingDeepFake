@@ -14,6 +14,7 @@
     <TestFramework>unittest</TestFramework>
     <UnitTestPattern>test*.py</UnitTestPattern>
     <UnitTestRootDirectory>.\test\</UnitTestRootDirectory>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,11 +37,17 @@
     <Compile Include="gan\generator.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="gan\train.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="gan\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PaintingDeepFake.py" />
-    <Compile Include="test\test_generator.py">
+    <Compile Include="test\test_data_generator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test\test_gan.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test\test_gpu.py">
