@@ -11,11 +11,10 @@ DATA_IMAGE_SIZE = (256, 256)
 EPOCHS = 35
 BATCHES_PER_EPOCH = 40
 SEED_SIZE = 100
-START = 15 * BATCHES_PER_EPOCH * BATCH_SIZE
 
 
 def train():
-    data_generator = DataGenerator(BATCH_SIZE, DATA_IMAGE_SIZE, START)
+    data_generator = DataGenerator(BATCH_SIZE, DATA_IMAGE_SIZE)
     discriminator = Discriminator(DATA_IMAGE_SIZE)
     generator = Generator(SEED_SIZE, DATA_IMAGE_SIZE[0])
 
