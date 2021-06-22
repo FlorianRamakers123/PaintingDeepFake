@@ -13,20 +13,20 @@ class DataGenerator(object):
     These images are resized and cropped to the appropiate size and converted to NumPy arrays.
     """
     
-    def __init__(self, batch_size, input_size, start=0):
+    def __init__(self, batch_size, input_size, skip=0):
         """
         Create a new DataGenerator.
         
         Args:
             batch_size (int): The size of the batch to generate.
             input_size ((int, int)): A (height, width) tuple specifying the dimensions of the image
-            start (int): the amount of images to skip
+            skip (int): the amount of images to skip
         """
         self._batch_size = batch_size
         self._input_size = input_size
         self._catalog = open(CATALOG_PATH, 'r')
-        self._start = start
-        self._step = 0
+        self._skip = skip
+        self._counter = 0
 
     def get_next_batch(self):
         """
@@ -39,14 +39,14 @@ class DataGenerator(object):
         images = []
         while len(images) < self._batch_size:
             line = self._catalog.readline()
+            self._counter += 1
+            if self._counter < self._skip:
+                continue
             url, time = line.split(",")
             time1 = int(time.split('-')[0])
             if time1 < 1650:        # only consider paintings after 1650
                 continue
             url = "https://www.wga.hu/art" + url.split("html")[1] + "jpg"
-            self._step += 1
-            if self._step < self._start:
-                continue
             try:
                 img_arr = self._scrape_image(url)
             except:
@@ -55,11 +55,20 @@ class DataGenerator(object):
                 continue
             img_arr = (img_arr - 127.5) / 127.5
             images.append(img_arr)
-        
+
         result = np.stack(images, axis=0)
         assert result.shape == (self._batch_size, self._input_size[0], self._input_size[1], 3)
         return result       
-    
+
+    def get_count(self):
+        """
+        Returns the number of lines read from the catalog.
+
+        Returns:
+            The number of lines read from the catalog.
+        """
+        return self._counter
+
     def _scrape_image(self, url):
         """
         Scrape the image of the specified url

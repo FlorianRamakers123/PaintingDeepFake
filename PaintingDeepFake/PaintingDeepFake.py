@@ -4,11 +4,10 @@ from gan.generator import Generator
 from gan.train import train_step
 from tqdm import tqdm
 import tensorflow as tf
-import time
 
-BATCH_SIZE = 10
+BATCH_SIZE = 20
 DATA_IMAGE_SIZE = (256, 256)
-EPOCHS = 20
+EPOCHS = 40
 BATCHES_PER_EPOCH = 40
 SEED_SIZE = 100
 
@@ -26,13 +25,18 @@ def train():
     manager = tf.train.CheckpointManager(checkpoint, './tf_ckpts', max_to_keep=3)
     checkpoint.restore(manager.latest_checkpoint)
 
+    should_stop = False
     for epoch in range(EPOCHS):
-        for i in tqdm(range(BATCHES_PER_EPOCH)):
-            batch = data_generator.get_next_batch()
-            train_step(batch, discriminator, generator)
-
-        if (epoch + 1) % 10 == 0:
-            manager.save()
+        for _ in tqdm(range(BATCHES_PER_EPOCH)):
+            try:
+                batch = data_generator.get_next_batch()
+                train_step(batch, discriminator, generator)
+            except:
+                should_stop = True
+                break
+        manager.save()
+        if should_stop:
+            break
 
     for _ in range(10):
         arr = generator()[0]
