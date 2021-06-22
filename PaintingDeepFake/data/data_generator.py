@@ -6,24 +6,27 @@ import numpy as np
 
 CATALOG_PATH = "data/catalog.csv"
 
+
 class DataGenerator(object):
     """ 
     Class for retrieving and preprocessing a batch of images. 
     These images are resized and cropped to the appropiate size and converted to NumPy arrays.
     """
     
-    def __init__(self, batch_size, input_size):
+    def __init__(self, batch_size, input_size, start=0):
         """
         Create a new DataGenerator.
         
         Args:
             batch_size (int): The size of the batch to generate.
-            input_size ((int, int)): A (heigth, width) tuple specifying the dimensions of the image 
+            input_size ((int, int)): A (height, width) tuple specifying the dimensions of the image
+            start (int): the amount of images to skip
         """
         self._batch_size = batch_size
         self._input_size = input_size
         self._catalog = open(CATALOG_PATH, 'r')
-        
+        self._start = start
+        self._step = 0
 
     def get_next_batch(self):
         """
@@ -41,9 +44,16 @@ class DataGenerator(object):
             if time1 < 1650:        # only consider paintings after 1650
                 continue
             url = "https://www.wga.hu/art" + url.split("html")[1] + "jpg"
-            img_arr = self._scrape_image(url)
+            self._step += 1
+            if self._step < self._start:
+                continue
+            try:
+                img_arr = self._scrape_image(url)
+            except:
+                continue
             if img_arr.shape[2] != 3:       # only consider RGB paintings
                 continue
+            img_arr = (img_arr - 127.5) / 127.5
             images.append(img_arr)
         
         result = np.stack(images, axis=0)
@@ -69,7 +79,6 @@ class DataGenerator(object):
         result = arr[:out_h, :out_w, :]
         assert result.shape[:2] == (out_h, out_w), f"{result.shape[:2]} != {(out_h, out_w)}"
         return result
-
 
     def destroy(self):
         self._catalog.close()

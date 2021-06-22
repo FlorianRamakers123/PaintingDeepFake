@@ -1,7 +1,6 @@
 import tensorflow as tf
 
 
-
 @tf.function
 def train_step(images, discriminator, generator):
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:

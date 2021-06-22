@@ -3,6 +3,7 @@ import tensorflow as tf
 
 cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
+
 class Generator(object):
     """ 
     The generator of the Generative Adversarial Network. 
@@ -22,7 +23,8 @@ class Generator(object):
         self._seed_size = seed_size
         self._optimizer = tf.keras.optimizers.Adam(1e-4)
 
-    def _make_model(self, input_size, output_size):
+    @staticmethod
+    def _make_model(input_size, output_size):
         model = tf.keras.Sequential()
         model.add(layers.Dense((output_size // 4) * (output_size // 4) * 256, use_bias=False, input_shape=(input_size,)))
         model.add(layers.BatchNormalization())
@@ -46,7 +48,8 @@ class Generator(object):
 
         return model
 
-    def loss(self, fake_output):
+    @staticmethod
+    def loss(fake_output):
         return cross_entropy(tf.ones_like(fake_output), fake_output)
 
     def optimizer(self):
